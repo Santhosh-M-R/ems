@@ -18,7 +18,9 @@ function Home(props) {
     get(child(dbRef, `expensedata`))
       .then((snapshot) => {
         if (snapshot.exists()) {
-          const integers = Object.keys(snapshot.val()).map((str) => parseInt(str, 10));
+          const integers = Object.keys(snapshot.val()).map((str) =>
+            parseInt(str, 10)
+          );
           const sortedIntegers = integers.sort((a, b) => b - a);
           setSortedIntegers(sortedIntegers);
           setData(snapshot.val());
@@ -43,6 +45,10 @@ function Home(props) {
       window.confirm("Are you sure that you wanted to delete that expense?")
     ) {
       remove(child(dbRef, `/expensedata/${id}`));
+
+      const filteredNumbers = sortedIntegers.filter((number) => number !== id);
+      setSortedIntegers(filteredNumbers);
+
       toast.success("Expense data removed successfully");
       setCount(1);
     }
@@ -88,18 +94,24 @@ function Home(props) {
               </tr>
             </thead>
             <tbody>
-              {sortedIntegers.map((value, index) => {
+              {sortedIntegers?.map((value, index) => {
                 const sample_data = data[value];
 
                 return (
                   <tr key={value}>
                     <th scope="row">{index + 1}</th>
-                    <td>{formatDate(sample_data.date)}</td>
-                    <td>{sample_data.name}</td>
-                    <td>{sample_data.amount}</td>
-                    <td>{sample_data.reason}</td>
+
                     <td>
-                      <Link to={`/update/${value}`}>
+                      {sample_data && sample_data.date
+                        ? formatDate(sample_data.date)
+                        : ""}
+                    </td>
+
+                    <td>{sample_data?.name}</td>
+                    <td>{sample_data?.amount}</td>
+                    <td>{sample_data?.reason}</td>
+                    <td>
+                      <Link to={`/ems/update/${value}`}>
                         <button className="btn btn-edit">Edit</button>
                       </Link>
                       <button
@@ -110,7 +122,7 @@ function Home(props) {
                       >
                         Delete
                       </button>
-                      <Link to={`/view/${value}`}>
+                      <Link to={`/ems/view/${value}`}>
                         <button className="btn btn-view">View</button>
                       </Link>
                     </td>
@@ -119,26 +131,61 @@ function Home(props) {
               })}
             </tbody>
           </table>
-          
+
           {/* Mobile view - List */}
           <div className="mobile-list">
-            {sortedIntegers.map((value, index) => {
+            {sortedIntegers?.map((value, index) => {
               const sample_data = data[value];
 
               return (
-                <div key={value} style={{ marginBottom: "20px", borderBottom: "1px solid #ccc", paddingBottom: "10px" }}>
-                  <p><strong>No.:</strong> {index + 1}</p>
-                  <p><strong>Date:</strong> {formatDate(sample_data.date)}</p>
-                  <p><strong>Expense Name:</strong> {sample_data.name}</p>
-                  <p><strong>Amount:</strong> {sample_data.amount}</p>
-                  <p><strong>Reason:</strong> {sample_data.reason}</p>
+                <div
+                  key={value}
+                  style={{
+                    marginBottom: "20px",
+                    borderBottom: "1px solid #ccc",
+                    paddingBottom: "10px",
+                  }}
+                >
+                  <p>
+                    <strong>No.:</strong> {index + 1}
+                  </p>
+                  <p>
+                    <strong>Date:</strong>{" "}
+                    {sample_data && sample_data.date
+                      ? formatDate(sample_data.date)
+                      : ""}
+                  </p>
+                  <p>
+                    <strong>Expense Name:</strong> {sample_data?.name}
+                  </p>
+                  <p>
+                    <strong>Amount:</strong> {sample_data?.amount}
+                  </p>
+                  <p>
+                    <strong>Reason:</strong> {sample_data?.reason}
+                  </p>
                   <div style={{ textAlign: "center" }}>
                     <Link to={`/update/${value}`}>
-                      <button style={{ marginRight: "10px" }} className="btn btn-edit">Edit</button>
+                      <button
+                        style={{ marginRight: "10px" }}
+                        className="btn btn-edit"
+                      >
+                        Edit
+                      </button>
                     </Link>
-                    <button className="btn btn-delete" onClick={() => onDelete(value)}>Delete</button>
+                    <button
+                      className="btn btn-delete"
+                      onClick={() => onDelete(value)}
+                    >
+                      Delete
+                    </button>
                     <Link to={`/view/${value}`}>
-                      <button style={{ marginLeft: "10px" }} className="btn btn-view">View</button>
+                      <button
+                        style={{ marginLeft: "10px" }}
+                        className="btn btn-view"
+                      >
+                        View
+                      </button>
                     </Link>
                   </div>
                 </div>
