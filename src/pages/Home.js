@@ -165,7 +165,7 @@ function Home(props) {
                     <strong>Reason:</strong> {sample_data?.reason}
                   </p>
                   <div style={{ textAlign: "center" }}>
-                    <Link to={`/update/${value}`}>
+                    <Link to={`/ems/update/${value}`}>
                       <button
                         style={{ marginRight: "10px" }}
                         className="btn btn-edit"
@@ -179,7 +179,7 @@ function Home(props) {
                     >
                       Delete
                     </button>
-                    <Link to={`/view/${value}`}>
+                    <Link to={`/ems/view/${value}`}>
                       <button
                         style={{ marginLeft: "10px" }}
                         className="btn btn-view"
