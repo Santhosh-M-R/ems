@@ -16,11 +16,11 @@ function App() {
         <Header />
         <ToastContainer position="top-center" />
         <Switch>
-          <Route exact path="/expense-management-system/" component={Home} />
-          <Route path="/expense-management-system/add" component={AddEdit} />
-          <Route path="/expense-management-system/update/:id" component={AddEdit} />
-          <Route path="/expense-management-system/view/:id" component={View} />
-          <Route path="/expense-management-system/chart" component={Chart} />
+          <Route exact path="/ems/" component={Home} />
+          <Route path="/ems/add" component={AddEdit} />
+          <Route path="/ems/update/:id" component={AddEdit} />
+          <Route path="/ems/view/:id" component={View} />
+          <Route path="/ems/chart" component={Chart} />
         </Switch>
       </div>
     </BrowserRouter>

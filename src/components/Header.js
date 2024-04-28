@@ -7,11 +7,11 @@ function Header(props) {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === "/expense-management-system/") {
+    if (location.pathname === "/ems/") {
       setActiveTab("Home");
-    } else if (location.pathname === "/expense-management-system/add") {
+    } else if (location.pathname === "/ems/add") {
       setActiveTab("AddExpense");
-    } else if (location.pathname === "/expense-management-system/chart") {
+    } else if (location.pathname === "/ems/chart") {
       setActiveTab("Chart");
     }
   }, [location]);
@@ -20,7 +20,7 @@ function Header(props) {
     <div className="header">
       <p className="logo">Expense Management System</p>
       <div className="header-right">
-        <Link to="/expense-management-system/">
+        <Link to="/ems/">
           <p
             className={`${activeTab === "Home" ? "active" : ""} `}
             onClick={() => setActiveTab("Home")}
@@ -28,7 +28,7 @@ function Header(props) {
             Home
           </p>
         </Link>
-        <Link to="/expense-management-system/add">
+        <Link to="/ems/add">
           <p
             className={`${activeTab === "AddExpense" ? "active" : ""} `}
             onClick={() => setActiveTab("AddExpense")}
@@ -36,7 +36,7 @@ function Header(props) {
             Add Expense
           </p>
         </Link>
-        <Link to="/expense-management-system/chart">
+        <Link to="/ems/chart">
           <p
             className={`${activeTab === "Chart" ? "active" : ""} `}
             onClick={() => setActiveTab("Chart")}
