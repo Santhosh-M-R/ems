@@ -91,7 +91,7 @@ function AddEdit(props) {
         toast.success("Expense Updated successfully!");
       }
 
-      setTimeout(() => history.push("/"), 500);
+      setTimeout(() => history.push("/ems/"), 500);
     }
   };
 
