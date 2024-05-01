@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Home.css";
-import { getDatabase, ref, child, get, remove, set } from "firebase/database";
+import {  ref, child, get, remove } from "firebase/database";
 import { database } from "../firebase-config";
 import { toast } from "react-toastify";
 import { Audio } from "react-loader-spinner";

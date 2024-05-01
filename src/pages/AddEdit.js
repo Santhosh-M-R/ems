@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import "./AddEdit.css";
 
@@ -10,12 +10,16 @@ import { database } from "../firebase-config";
 import { Audio } from "react-loader-spinner";
 
 function AddEdit(props) {
-  const initialState = {
-    id: "",
-    name: "",
-    amount: "",
-    reason: "",
-  };
+  // Initialize initialState using useMemo
+  const initialState = useMemo(
+    () => ({
+      id: "",
+      name: "",
+      amount: "",
+      reason: "",
+    }),
+    []
+  );
   const [state, setState] = useState(initialState);
   const [data, setData] = useState({});
   const { name, amount, reason, date, category } = state;
@@ -58,7 +62,7 @@ function AddEdit(props) {
     return () => {
       setState({ ...initialState });
     };
-  }, [id, data]);
+  }, [id, data, initialState]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -93,15 +97,11 @@ function AddEdit(props) {
 
       //backup data store
       const dbRef = ref(database);
-      get(child(dbRef, `expensedata`))
-      .then((snapshot) => {
+      get(child(dbRef, `expensedata`)).then((snapshot) => {
         if (snapshot.exists()) {
-         set(ref(database, "backupdata/"), { ...snapshot.val() });
+          set(ref(database, "backupdata/"), { ...snapshot.val() });
         }
-      })
-                
-
-
+      });
 
       setTimeout(() => history.push("/ems/"), 500);
     }
