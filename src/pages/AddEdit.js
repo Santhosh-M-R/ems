@@ -18,7 +18,7 @@ function AddEdit(props) {
   };
   const [state, setState] = useState(initialState);
   const [data, setData] = useState({});
-  const { name, amount, reason, date } = state;
+  const { name, amount, reason, date, category } = state;
 
   const [loading, setLoading] = useState(true);
 
@@ -62,7 +62,7 @@ function AddEdit(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!name || !amount || !reason || !date) {
+    if (!name || !amount || !category || !date) {
       toast.error("Please fill the required fields");
     } else {
       if (!id) {
@@ -72,6 +72,7 @@ function AddEdit(props) {
         set(ref(database, "expensedata/" + tid), {
           id: tid,
           name: name,
+          category: category,
           amount: amount,
           date: date,
           reason: reason,
@@ -84,12 +85,23 @@ function AddEdit(props) {
         const tid = id;
         set(ref(database, "expensedata/" + tid), {
           ...state,
-          epoch: Math.floor(new Date().getTime() / 1000)
         }).catch((err) => {
           toast.error(err);
         });
         toast.success("Expense Updated successfully!");
       }
+
+      //backup data store
+      const dbRef = ref(database);
+      get(child(dbRef, `expensedata`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+         set(ref(database, "backupdata/"), { ...snapshot.val() });
+        }
+      })
+                
+
+
 
       setTimeout(() => history.push("/ems/"), 500);
     }
@@ -153,6 +165,21 @@ function AddEdit(props) {
           value={name || ""}
           onChange={handleInputChange}
         />
+        <label htmlFor="category">Expense Category</label>
+        <select
+          id="category"
+          name="category"
+          value={category || ""}
+          onChange={handleInputChange}
+        >
+          <option value="">Select the category</option>
+          <option value="Food">Food</option>
+          <option value="Petrol">Petrol</option>
+          <option value="Travel">Travel</option>
+          <option value="Entertainment">Entertainment</option>
+          <option value="Others">Others</option>
+        </select>
+
         <label htmlFor="amount">Enter the amount</label>
         <input
           type="number"

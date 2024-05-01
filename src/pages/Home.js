@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Home.css";
-import { getDatabase, ref, child, get, remove } from "firebase/database";
+import { getDatabase, ref, child, get, remove, set } from "firebase/database";
 import { database } from "../firebase-config";
 import { toast } from "react-toastify";
 import { Audio } from "react-loader-spinner";
@@ -88,6 +88,7 @@ function Home(props) {
                 <th style={{ textAlign: "center" }}>No.</th>
                 <th style={{ textAlign: "center" }}>Date</th>
                 <th style={{ textAlign: "center" }}>Expense Name</th>
+                <th style={{ textAlign: "center" }}>Expense Category</th>
                 <th style={{ textAlign: "center" }}>Amount</th>
                 <th style={{ textAlign: "center" }}>Reason</th>
                 <th style={{ textAlign: "center" }}>Action</th>
@@ -108,8 +109,9 @@ function Home(props) {
                     </td>
 
                     <td>{sample_data?.name}</td>
+                    <td>{sample_data?.category}</td>
                     <td>{sample_data?.amount}</td>
-                    <td>{sample_data?.reason}</td>
+                    <td>{sample_data?.reason || "none"} </td>
                     <td>
                       <Link to={`/ems/update/${value}`}>
                         <button className="btn btn-edit">Edit</button>
@@ -159,10 +161,13 @@ function Home(props) {
                     <strong>Expense Name:</strong> {sample_data?.name}
                   </p>
                   <p>
+                    <strong>Expense Category:</strong> {sample_data?.category}
+                  </p>
+                  <p>
                     <strong>Amount:</strong> {sample_data?.amount}
                   </p>
                   <p>
-                    <strong>Reason:</strong> {sample_data?.reason}
+                    <strong>Reason:</strong> {sample_data?.reason || "none"}
                   </p>
                   <div style={{ textAlign: "center" }}>
                     <Link to={`/ems/update/${value}`}>
