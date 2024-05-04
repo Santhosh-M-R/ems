@@ -82,7 +82,7 @@ function View(props) {
             <span>{user.reason}</span>
             <br />
             <br />
-            <Link to="/">
+            <Link to="/ems/">
               <button className="btn btn-edit">Go Back</button>
             </Link>
           </div>
