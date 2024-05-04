@@ -175,6 +175,7 @@ function AddEdit(props) {
           <option value="">Select the category</option>
           <option value="Food">Food</option>
           <option value="Petrol">Petrol</option>
+          <option value="Sports">Sports</option>
           <option value="Travel">Travel</option>
           <option value="Entertainment">Entertainment</option>
           <option value="Others">Others</option>
