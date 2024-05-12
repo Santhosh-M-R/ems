@@ -1,18 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { ref, child, get } from "firebase/database";
 import { Audio } from "react-loader-spinner";
 import { database } from "../firebase-config";
-// import { Bar } from "react-chartjs-2";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
+import "./Chart.css";
+
 function Chart(props) {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
-  const chartRef = useRef(null);
+  const [selectedMonth, setSelectedMonth] = useState(null);
 
   useEffect(() => {
-    const dbRef = ref(database);
-
-    get(child(dbRef, `expensedata`))
-      .then((snapshot) => {
+    const fetchData = async () => {
+      try {
+        const dbRef = ref(database);
+        const snapshot = await get(child(dbRef, "expensedata"));
         if (snapshot.exists()) {
           setData(snapshot.val());
         } else {
@@ -20,62 +22,51 @@ function Chart(props) {
           setData({});
         }
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error(error);
         setLoading(false);
-      });
-    return () => {
-      setData({});
-    };
-  }, []);
-  const groupedData = {};
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      const entry = data[key];
-      const date = new Date(entry.date);
-      const month = date.toLocaleString("default", { month: "long" });
-
-      if (!groupedData[month]) {
-        groupedData[month] = [];
       }
+    };
 
-      groupedData[month].push(parseFloat(entry.amount)); // Convert amount to float
+    fetchData();
+  }, []);
+  console.log("selectedMonth", selectedMonth);
+  const processData = () => {
+    const filteredData = selectedMonth
+      ? Object.values(data).filter((entry) => {
+          const date = new Date(entry.date);
+          return date.getMonth() + 1 === selectedMonth;
+        })
+      : Object.values(data);
+
+    const categoryAmounts = {};
+    for (const entry of filteredData) {
+      const { category, amount } = entry;
+      if (categoryAmounts[category]) {
+        categoryAmounts[category] += parseFloat(amount);
+      } else {
+        categoryAmounts[category] = parseFloat(amount);
+      }
     }
-  }
-  const totalByMonth = {};
 
-  for (const month in groupedData) {
-    if (groupedData.hasOwnProperty(month)) {
-      const total = groupedData[month].reduce((acc, curr) => acc + curr, 0);
-      totalByMonth[month] = total;
-    }
-  }
+    // Convert data to array format expected by Recharts Pie component
+    return Object.entries(categoryAmounts).map(([category, amount]) => ({
+      category,
+      amount,
+    }));
+  };
 
-  // return (
-  //   <>
-  //     <div style={{ marginTop: "150px" }}>
-  //       <h1>Will be publishing charts data soon</h1>
-  //     </div>
-  //     <div
-  //       style={{
-  //         display: "flex",
-  //         alignItems: "center",
-  //         justifyContent: "center",
-  //       }}
-  //     >
-  //       <Audio
-  //         height="100"
-  //         width="100"
-  //         radius="9"
-  //         color="green"
-  //         ariaLabel="loading"
-  //         wrapperStyle
-  //         wrapperClass
-  //       />
-  //     </div>
-  //   </>
-  // );
+  const COLORS = [
+    "#FF6384",
+    "#36A2EB",
+    "#FFCE56",
+    "#66FF99",
+    "#FF9900",
+    "#99FF99",
+    "#9966FF",
+    "#66FFFF",
+  ];
+
   return (
     <div>
       {loading && (
@@ -86,18 +77,55 @@ function Chart(props) {
             justifyContent: "center",
           }}
         >
-          <Audio height="100" width="100" radius="9" color="green" />
+          <Audio height={100} width={100} radius={9} color="green" />
         </div>
       )}
-      <div>
-        {Object.entries(totalByMonth).map(([month, value]) => (
-          <React.Fragment key={month}>
-            <p>
-              {month}: {value}
-            </p>
-          </React.Fragment>
-        ))}
-      </div>
+
+      {!loading && data && (
+        <div>
+          <h2>Total Expenses by Category</h2>
+          <div className="select-month">
+            <label htmlFor="monthSelect">Select Month: </label>
+            <select
+              id="monthSelect"
+              onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+              value={selectedMonth || ""}
+            >
+              <option value="">All Months</option>
+              {Array.from({ length: 12 }, (_, i) => (
+                <option key={i} value={i + 1}>
+                  {new Date(2000, i).toLocaleString("default", {
+                    month: "long",
+                  })}
+                </option>
+              ))}
+            </select>
+          </div>
+          {processData().length > 0 ? (
+            <ResponsiveContainer width="100%" height={400}>
+              <PieChart>
+                <Pie
+                  data={processData()}
+                  dataKey="amount"
+                  nameKey="category"
+                  outerRadius={120}
+                  label
+                >
+                  {processData().map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <p>No data</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

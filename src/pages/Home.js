@@ -24,6 +24,8 @@ function Home(props) {
           const sortedIntegers = integers.sort((a, b) => b - a);
           setSortedIntegers(sortedIntegers);
           setData(snapshot.val());
+          console.log("value",snapshot.val())
+          console.log("sorted one",sortedIntegers)
         } else {
           console.log("No data available");
           setData({});
