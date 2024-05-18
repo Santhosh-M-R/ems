@@ -43,7 +43,7 @@ function Chart(props) {
 
     fetchData();
   }, []);
-  console.log("selectedMonth", selectedMonth);
+
   const processData = () => {
     const filteredData = selectedMonth
       ? Object.values(data).filter((entry) => {
@@ -81,7 +81,6 @@ function Chart(props) {
   ];
 
   const totalValue = processData().reduce((acc, curr) => acc + curr.amount, 0);
-  console.log("totalValue", totalValue);
 
   return (
     <div>
