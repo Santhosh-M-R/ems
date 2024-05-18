@@ -9,7 +9,20 @@ function Chart(props) {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState(null);
-
+  var months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -67,6 +80,9 @@ function Chart(props) {
     "#66FFFF",
   ];
 
+  const totalValue = processData().reduce((acc, curr) => acc + curr.amount, 0);
+  console.log("totalValue", totalValue);
+
   return (
     <div>
       {loading && (
@@ -102,25 +118,30 @@ function Chart(props) {
             </select>
           </div>
           {processData().length > 0 ? (
-            <ResponsiveContainer width="100%" height={400}>
-              <PieChart>
-                <Pie
-                  data={processData()}
-                  dataKey="amount"
-                  nameKey="category"
-                  outerRadius={120}
-                  label
-                >
-                  {processData().map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+            <>
+              <p>
+                {months[selectedMonth - 1]} Total: {totalValue} rs
+              </p>
+              <ResponsiveContainer width="100%" height={400}>
+                <PieChart>
+                  <Pie
+                    data={processData()}
+                    dataKey="amount"
+                    nameKey="category"
+                    outerRadius={120}
+                    label
+                  >
+                    {processData().map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </>
           ) : (
             <p>No data</p>
           )}
