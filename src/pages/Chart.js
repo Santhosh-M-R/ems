@@ -119,9 +119,9 @@ function Chart(props) {
           </div>
           {processData().length > 0 ? (
             <>
-              <p>
+              <span>
                 {months[selectedMonth - 1]} Total: {totalValue} rs
-              </p>
+              </span>
               <ResponsiveContainer width="100%" height={400}>
                 <PieChart>
                   <Pie
